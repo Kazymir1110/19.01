@@ -225,3 +225,89 @@ console.log(getAllPropValues(products, "category"));
 
 console.log(calculateTotalPrice(products, "Сік")); 
 console.log(calculateTotalPrice(products, "Вино")); 
+
+// Завдання 7 
+
+
+
+// Напиши сценарій керування особистим кабінетом інтернет-банку. 
+// Є об'єкт account в якому необхідно реалізувати методи для роботи 
+// з балансом та історією транзакцій.
+
+
+const account = {
+  balance: 0, 
+  transactions: [],
+
+  
+  getBalance() {
+    return this.balance;
+  },
+
+  
+  deposit(amount) {
+    if (amount <= 0) {
+      console.log("Сума для поповнення має бути більше нуля.");
+      return;
+    }
+    this.balance += amount;
+    this.transactions.push({
+      type: "deposit",
+      amount,
+      date: new Date().toISOString()
+    });
+    console.log(`Рахунок поповнено на ${amount} грн. Поточний баланс: ${this.balance} грн.`);
+  },
+
+
+  withdraw(amount) {
+    if (amount <= 0) {
+      console.log("Сума для зняття має бути більше нуля.");
+      return;
+    }
+    if (amount > this.balance) {
+      console.log("Недостатньо коштів на рахунку.");
+      return;
+    }
+    this.balance -= amount;
+    this.transactions.push({
+      type: "withdraw",
+      amount,
+      date: new Date().toISOString()
+    });
+    console.log(`З рахунку знято ${amount} грн. Поточний баланс: ${this.balance} грн.`);
+  },
+
+  getTransactionHistory() {
+    if (this.transactions.length === 0) {
+      console.log("Історія транзакцій порожня.");
+      return;
+    }
+    console.log("Історія транзакцій:");
+    this.transactions.forEach((transaction, index) => {
+      console.log(`${index + 1}. ${transaction.type === "deposit" ? "Поповнення" : "Зняття"} на суму ${transaction.amount} грн, дата: ${transaction.date}`);
+    });
+  },
+
+  cancelLastTransaction() {
+    if (this.transactions.length === 0) {
+      console.log("Немає транзакцій для скасування.");
+      return;
+    }
+    const lastTransaction = this.transactions.pop();
+    if (lastTransaction.type === "deposit") {
+      this.balance -= lastTransaction.amount;
+    } else if (lastTransaction.type === "withdraw") {
+      this.balance += lastTransaction.amount;
+    }
+    console.log(`Останню транзакцію (${lastTransaction.type === "deposit" ? "поповнення" : "зняття"} на суму ${lastTransaction.amount} грн) скасовано. Поточний баланс: ${this.balance} грн.`);
+  }
+};
+
+
+account.deposit(500); 
+account.withdraw(200); 
+account.getTransactionHistory();
+account.cancelLastTransaction(); 
+account.getTransactionHistory(); 
+console.log(`Поточний баланс: ${account.getBalance()} грн`);
